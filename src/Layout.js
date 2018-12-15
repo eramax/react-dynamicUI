@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import Tag from './Components/Tag'
+
 import { BrowserRouter as Router } from 'react-router-dom'
 
 export default class Layout extends React.Component {
@@ -10,14 +11,16 @@ export default class Layout extends React.Component {
   }
   state = {
     Components: [],
+    PartialComponents: [],
     Data: []
   }
   componentDidMount() {
     if (this.state.Components.lenth > 0) return
     axios.get('https://api.myjson.com/bins/9a29w').then(res => {
-      let Components = res.data.Components
-      let Data = res.data.Data
-      this.setState({ Components, Data })
+      let Components = res.data.Components || []
+      let PartialComponents = res.data.PartialComponents || []
+      let Data = res.data.Data || []
+      this.setState({ Components, PartialComponents, Data })
     })
   }
 
