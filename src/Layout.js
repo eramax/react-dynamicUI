@@ -16,7 +16,7 @@ export default class Layout extends React.Component {
   }
   componentDidMount() {
     if (this.state.Components.lenth > 0) return
-    axios.get('https://api.myjson.com/bins/hgv08').then(res => {
+    axios.get('https://api.myjson.com/bins/lxtrc').then(res => {
       let Components = res.data.Components || []
       let PartialComponents = res.data.PartialComponents || []
       let Data = res.data.Data || []
@@ -68,6 +68,18 @@ export default class Layout extends React.Component {
     alert('hello')
   }
 
+  GetLengh = () => {
+    console.log('GetLengh')
+  }
+
+  OpenLink = () => {
+    console.log('OpenLink ')
+  }
+
+  SubmitForm = () => {
+    console.log('SubmitForm ')
+  }
+
   Methods = {
     getVar: this.getVar,
     setVar: this.setVar,
@@ -75,7 +87,10 @@ export default class Layout extends React.Component {
     alertx: this.alertx,
     IncrementF: this.Increment,
     StringFormat: this.StringFormat,
-    GetPartialComponent: this.GetPartialComponent
+    GetPartialComponent: this.GetPartialComponent,
+    GetLengh: this.GetLengh,
+    OpenLink: this.OpenLink,
+    SubmitForm: this.SubmitForm
   }
   handler = (method, vars) => {
     if (method in this.Methods) return this.Methods[method](vars)

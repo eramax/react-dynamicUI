@@ -13,8 +13,16 @@ export default class Utils {
   static PropVal = (prop, handler) => {
     let str = ''
     if (Utils.has(prop, 'Values')) str += prop['Values']
+    if (Utils.has(prop, 'Funcs')) {
+      prop['Funcs'].map(
+        item => (console.log(item.FuncName), handler[item.FuncName]())
+      )
+    }
     return str
   }
+
+  static PropFunCall = (prop, handler) => () =>
+    prop.map(item => handler[item.FuncName]())
   static IsVoidComponent = TagType =>
     Utils.voidComponents.indexOf(TagType) !== -1
 

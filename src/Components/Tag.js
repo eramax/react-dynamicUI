@@ -26,6 +26,9 @@ export default function Tag(props) {
     for (let key in tag.Props) {
       TagProps[key] = Utils.PropVal(tag.Props[key], handler)
     }
+    for (let key in tag.Events) {
+      TagProps[key] = Utils.PropFunCall(tag.Events[key], handler)
+    }
   }
 
   let TagContents
@@ -34,7 +37,7 @@ export default function Tag(props) {
   }
 
   if (Utils.IsVoidComponent(TagType)) {
-    return React.createElement(tag['Type'], { ...TagProps }, tag['Content'])
+    return React.createElement(TagType, { ...TagProps }, TagContents)
   }
 
   let TagChildrens = []
