@@ -16,7 +16,7 @@ export default class Layout extends React.Component {
   }
   componentDidMount() {
     if (this.state.Components.lenth > 0) return
-    axios.get('https://api.myjson.com/bins/9a29w').then(res => {
+    axios.get('https://api.myjson.com/bins/hgv08').then(res => {
       let Components = res.data.Components || []
       let PartialComponents = res.data.PartialComponents || []
       let Data = res.data.Data || []
@@ -58,6 +58,15 @@ export default class Layout extends React.Component {
     })
     return str
   }
+  GetPartialComponent = (x, link) => {
+    if (x in this.state.PartialComponents) {
+      return this.state.PartialComponents[x]
+    }
+    //else --------- axios
+  }
+  alertx = () => {
+    alert('hello')
+  }
 
   Methods = {
     getVar: this.getVar,
@@ -65,14 +74,16 @@ export default class Layout extends React.Component {
     toggle: this.toggle,
     alertx: this.alertx,
     IncrementF: this.Increment,
-    StringFormat: this.StringFormat
+    StringFormat: this.StringFormat,
+    GetPartialComponent: this.GetPartialComponent
   }
   handler = (method, vars) => {
     if (method in this.Methods) return this.Methods[method](vars)
   }
+
   render() {
     var comps = this.state.Components.map((item, index) => (
-      <Tag key={index} tag={item} handler={this.handler} />
+      <Tag key={index} tag={item} handler={this.Methods} scope="" />
     ))
     return (
       <Router>

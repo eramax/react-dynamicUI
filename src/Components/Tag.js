@@ -3,19 +3,24 @@ import Img from './Img'
 import { NavLink } from 'react-router-dom'
 import ERoutes from './ERoutes'
 import Utils from '../Utils/Utils'
+import Loader from './Loader'
+
 const components = {
   Img: Img,
   NavLink: NavLink,
-  ERoutes: ERoutes
+  ERoutes: ERoutes,
+  Loader: Loader
 }
 
 export default function Tag(props) {
-  const { tag, handler } = props
-  console.log(tag)
+  const { tag, handler, scope } = props
+  //console.log(tag)
 
   if (!Utils.has(tag, 'Type')) return <p className="is-loading">Loading....</p>
-
   let TagType = components[tag['Type']] || tag['Type']
+  if (TagType === Loader)
+    return <Loader tag={tag['Loader']} handler={handler} scope={scope} />
+
   let TagProps = {}
   if (Utils.has(tag, 'Props')) {
     for (let key in tag.Props) {
@@ -23,11 +28,10 @@ export default function Tag(props) {
     }
   }
 
-  let TagContents = ''
+  let TagContents
   if (Utils.has(tag, 'Contents')) {
     TagContents = Utils.PropVal(tag.Contents, handler)
   }
-  console.log(TagContents)
 
   if (Utils.IsVoidComponent(TagType)) {
     return React.createElement(tag['Type'], { ...TagProps }, tag['Content'])
@@ -36,7 +40,7 @@ export default function Tag(props) {
   let TagChildrens = []
   if (Utils.has(tag, 'Childerns')) {
     TagChildrens = tag['Childerns'].map(item => (
-      <Tag key={item['Key']} tag={item} handler={handler} />
+      <Tag key={item['Key']} tag={item} handler={handler} scope={scope} />
     ))
   }
   let tggg
