@@ -24,29 +24,54 @@ export default function Tag(props) {
   let TagProps = {}
   if (Utils.has(tag, 'Props')) {
     for (let key in tag.Props) {
-      TagProps[key] = Utils.PropVal(tag.Props[key], handler)
+      TagProps[key] = Utils.PropVal(tag.Props[key], handler, scope)
     }
     for (let key in tag.Events) {
-      TagProps[key] = Utils.PropFunCall(tag.Events[key], handler)
+      TagProps[key] = Utils.PropFunCall(tag.Events[key], handler, scope)
     }
   }
 
   let TagContents
   if (Utils.has(tag, 'Contents')) {
-    TagContents = Utils.PropVal(tag.Contents, handler)
+    TagContents = Utils.PropVal(tag.Contents, handler, scope)
   }
 
-  if (Utils.IsVoidComponent(TagType)) {
-    return React.createElement(TagType, { ...TagProps }, TagContents)
+  let RepeatCount = 1
+  let NewScope = scope
+  let ResultScope
+  if (Utils.has(tag, 'RepeatWith')) {
+    NewScope = tag['RepeatWith']
+    RepeatCount = handler.getVarLength(tag['RepeatWith'])
   }
 
+  let TagReturn = []
   let TagChildrens = []
-  if (Utils.has(tag, 'Childerns')) {
-    TagChildrens = tag['Childerns'].map(item => (
-      <Tag key={item['Key']} tag={item} handler={handler} scope={scope} />
-    ))
+  for (let i = 0; i < RepeatCount; i++) {
+    let TagResult
+    TagProps.key = i
+    if (NewScope !== scope) ResultScope = NewScope + '.' + i
+    else ResultScope = scope
+    if (Utils.IsVoidComponent(TagType)) {
+      TagResult = React.createElement(TagType, TagProps, TagContents)
+    } else {
+      if (Utils.has(tag, 'Childerns')) {
+        TagChildrens = tag['Childerns'].map(item => (
+          <Tag
+            key={item['Key']}
+            tag={item}
+            handler={handler}
+            scope={ResultScope}
+          />
+        ))
+      }
+      TagResult = React.createElement(
+        TagType,
+        TagProps,
+        TagContents,
+        TagChildrens
+      )
+    }
+    TagReturn.push(TagResult)
   }
-  let tggg
-  tggg = React.createElement(TagType, TagProps, TagContents, TagChildrens)
-  return <React.Fragment>{tggg}</React.Fragment>
+  return <React.Fragment>{TagReturn}</React.Fragment>
 }

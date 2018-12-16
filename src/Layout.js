@@ -31,17 +31,35 @@ export default class Layout extends React.Component {
     this.setVar(c2)
   }
   getVar = x => {
-    //console.log(x)
-    if (this.state.vars[x] !== undefined) return this.state.vars[x]
+    if (this.state.Data[x] !== undefined) return this.state.Data[x]
     else return null
   }
   setVar = x => {
     console.log(x)
-    let vars = this.state.vars
+    let vars = this.state.Data
     vars[x.key] = x.val
     this.setState({
-      vars: vars
+      Data: vars
     })
+  }
+  getVar2 = (prop, store = null) => {
+    let obj = store || this.state.Data
+    if (typeof obj === 'undefined') return false
+    var _index = prop.indexOf('.')
+    if (_index > -1) {
+      return this.getVar2(
+        prop.substr(_index + 1),
+        obj[prop.substring(0, _index)]
+      )
+    }
+    //console.log(prop)
+    //console.log(obj[prop])
+    return obj[prop]
+  }
+
+  getVarLength = x => {
+    let v = this.getVar(x)
+    return v != null ? v.length : null
   }
 
   Increment = x => {
@@ -68,8 +86,10 @@ export default class Layout extends React.Component {
     alert('hello')
   }
 
-  GetLengh = () => {
-    console.log('GetLengh')
+  GetLengh = data => {
+    //console.log(data.inp1)
+    //console.log(data.inp1.length)
+    return data != undefined && data.inp1 != undefined ? data.inp1.length : null
   }
 
   OpenLink = () => {
@@ -90,7 +110,9 @@ export default class Layout extends React.Component {
     GetPartialComponent: this.GetPartialComponent,
     GetLengh: this.GetLengh,
     OpenLink: this.OpenLink,
-    SubmitForm: this.SubmitForm
+    SubmitForm: this.SubmitForm,
+    getVarLength: this.getVarLength,
+    getVar2: this.getVar2
   }
   handler = (method, vars) => {
     if (method in this.Methods) return this.Methods[method](vars)
