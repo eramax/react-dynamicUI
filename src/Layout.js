@@ -1,14 +1,11 @@
 import React from 'react'
 import axios from 'axios'
 import Tag from './Components/Tag'
+import Utils from './Utils/Utils'
 
 import { BrowserRouter as Router } from 'react-router-dom'
 
 export default class Layout extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handler = this.handler.bind(this)
-  }
   state = {
     Components: [],
     PartialComponents: [],
@@ -16,7 +13,7 @@ export default class Layout extends React.Component {
   }
   componentDidMount() {
     if (this.state.Components.lenth > 0) return
-    axios.get('https://api.myjson.com/bins/lxtrc').then(res => {
+    axios.get('https://api.myjson.com/bins/1e6wq8').then(res => {
       let Components = res.data.Components || []
       let PartialComponents = res.data.PartialComponents || []
       let Data = res.data.Data || []
@@ -35,7 +32,7 @@ export default class Layout extends React.Component {
     else return null
   }
   setVar = x => {
-    console.log(x)
+    //console.log(x)
     let vars = this.state.Data
     vars[x.key] = x.val
     this.setState({
@@ -52,9 +49,26 @@ export default class Layout extends React.Component {
         obj[prop.substring(0, _index)]
       )
     }
-    //console.log(prop)
-    //console.log(obj[prop])
     return obj[prop]
+  }
+
+  getVar3 = (prop, store = null) => {
+    let obj = store || this.state.Data
+    return Utils.getter(obj, prop)
+  }
+
+  DeleteVar3 = prop => {
+    let currentData = this.state.Data
+    let updatedData = Utils.Remover(currentData, prop['index'])
+    this.setState({ Date: updatedData })
+  }
+
+  UpdateVar = prop => {
+    console.log(prop)
+    let currentData = this.state.Data
+    let updatedData = Utils.Updater(currentData, prop['index'], prop['Val'])
+    console.log(updatedData)
+    this.setState({ Date: updatedData })
   }
 
   getVarLength = x => {
@@ -87,9 +101,12 @@ export default class Layout extends React.Component {
   }
 
   GetLengh = data => {
-    //console.log(data.inp1)
-    //console.log(data.inp1.length)
-    return data != undefined && data.inp1 != undefined ? data.inp1.length : null
+    return data !== undefined &&
+      data !== null &&
+      data.inp !== undefined &&
+      data.inp !== null
+      ? data.inp.length
+      : null
   }
 
   OpenLink = () => {
@@ -112,7 +129,9 @@ export default class Layout extends React.Component {
     OpenLink: this.OpenLink,
     SubmitForm: this.SubmitForm,
     getVarLength: this.getVarLength,
-    getVar2: this.getVar2
+    getVar2: this.getVar3,
+    Delete: this.DeleteVar3,
+    Update: this.UpdateVar
   }
   handler = (method, vars) => {
     if (method in this.Methods) return this.Methods[method](vars)

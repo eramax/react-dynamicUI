@@ -1,4 +1,5 @@
 //import React from 'react'
+import set from 'set-value'
 
 export default class Utils {
   static has(obj, varName) {
@@ -15,38 +16,94 @@ export default class Utils {
   }
   static PropVal = (prop, handler, scope) => {
     let str = ''
-    if (Utils.has(prop, 'Values')) str += prop['Values']
+    if (Utils.has(prop, 'Values')) {
+      prop['Values'].map(item => (str += item + ' '))
+    }
     if (Utils.has(prop, 'Indexs')) {
-      str += prop['Indexs'].map(item => handler.getVar2(scope + '.' + item))
+      str +=
+        prop['Indexs'].map(item => handler.getVar2(scope + '.' + item)) + ' '
     }
     if (Utils.has(prop, 'Funcs')) {
-      prop['Funcs'].map(
-        item => (
-          console.log(item.FuncName),
-          handler
-            [item.FuncName]
-            //Utils.FuncParms(item.Paramaters, handler, scope)
-            ()
-        )
+      str += prop['Funcs'].map(
+        item =>
+          handler[item.FuncName](
+            Utils.FuncParms(item.Paramaters, handler, scope)
+          ) + ' '
       )
     }
-    return str
+    return str.trimEnd()
   }
 
   static FuncParms = (Paramaters, handler, scope) => {
     let params = {}
-    for (let key in Paramaters) {
-      params['inp'] = Utils.PropVal('Friends', handler, scope)
-    }
-    console.log(params)
+    let idx
+    Paramaters.map(
+      item => (
+        (idx = Utils.TrimIndex(scope + '.' + String(item.Index))),
+        (params[item.ParameterName] = item.SendByRefence
+          ? idx
+          : item.DefaultVal || handler.getVar2(idx))
+      )
+    )
     return params
   }
+  static TrimIndex = s => (s[s.length - 1] === '.' ? s.slice(0, -1) : s)
 
   static PropFunCall = (prop, handler, scope) => () =>
-    prop.map(item => handler[item.FuncName]())
+    prop.map(item =>
+      handler[item.FuncName](Utils.FuncParms(item.Paramaters, handler, scope))
+    )
 
   static IsVoidComponent = TagType =>
     Utils.voidComponents.indexOf(TagType) !== -1
+
+  static GetByStrIndex = (o, s, operation = 'Get', newVal = null) => {
+    s = s.replace(/\[(\w+)\]/g, '.$1') // convert indexes to properties
+    s = s.replace(/^\./, '') // strip a leading dot
+    var a = s.split('.')
+    for (var i = 0, n = a.length; i < n; ++i) {
+      var k = a[i]
+      if (k in o) {
+        o = o[k]
+      } else {
+        return
+      }
+    }
+    return o
+  }
+
+  static getVal = (p, o) =>
+    p.reduce((xs, x) => (xs && (xs[x] || xs[x] === 0) ? xs[x] : null), o)
+
+  static getter = (store, s) => {
+    s = s.replace(/\[(\w+)\]/g, '.$1') // convert indexes to properties
+    s = s.replace(/^\./, '') // strip a leading dot
+    var a = s.split('.')
+    return Utils.getVal(a, store)
+  }
+
+  static Updater = (store, s, newVal) => {
+    set(store, s, newVal)
+    return store
+  }
+  static Remover = (o, s) => {
+    let b = o
+    s = s.replace(/\[(\w+)\]/g, '.$1') // convert indexes to properties
+    s = s.replace(/^\./, '') // strip a leading dot
+    var a = s.split('.')
+    var k
+    for (var i = 0, n = a.length; i < n; ++i) {
+      k = a[i]
+      if (k in o) {
+        if (i === n - 1) {
+          o = o.splice(k, 1)
+        } else o = o[k]
+      } else {
+        return
+      }
+    }
+    return b
+  }
 
   static voidComponents = [
     'area',
