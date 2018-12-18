@@ -61,21 +61,6 @@ export default class Utils {
   static IsVoidComponent = TagType =>
     Utils.voidComponents.indexOf(TagType) !== -1
 
-  static GetByStrIndex = (o, s, operation = 'Get', newVal = null) => {
-    s = s.replace(/\[(\w+)\]/g, '.$1') // convert indexes to properties
-    s = s.replace(/^\./, '') // strip a leading dot
-    var a = s.split('.')
-    for (var i = 0, n = a.length; i < n; ++i) {
-      var k = a[i]
-      if (k in o) {
-        o = o[k]
-      } else {
-        return
-      }
-    }
-    return o
-  }
-
   static getVal = (p, o) =>
     p.reduce((xs, x) => (xs && (xs[x] || xs[x] === 0) ? xs[x] : null), o)
 

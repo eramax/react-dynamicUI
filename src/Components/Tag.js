@@ -1,12 +1,12 @@
 import React from 'react'
-import Img from './Img'
+//import Img from './Img'
 import { NavLink } from 'react-router-dom'
 import ERoutes from './ERoutes'
 import Utils from '../Utils/Utils'
 import Loader from './Loader'
 
 const components = {
-  Img: Img,
+  //Img: Img,
   NavLink: NavLink,
   ERoutes: ERoutes,
   Loader: Loader
