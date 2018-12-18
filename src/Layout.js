@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import Tag from './Components/Tag'
 import Utils from './Utils/Utils'
+import Alert from './Bootsrap/Alert'
 
 import { BrowserRouter as Router } from 'react-router-dom'
 
@@ -114,6 +115,9 @@ export default class Layout extends React.Component {
     var comps = this.state.Components.map((item, index) => (
       <Tag key={index} tag={item} handler={this.Methods} scope="" />
     ))
+
+    comps = <Alert content="xsadasdsadsad" toggle={true} />
+
     return (
       <Router>
         <div>{comps}</div>
