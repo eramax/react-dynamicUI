@@ -27,47 +27,21 @@ export default class Layout extends React.Component {
     let c2 = { key: x, val: c }
     this.setVar(c2)
   }
-  getVar = x => {
-    if (this.state.Data[x] !== undefined) return this.state.Data[x]
-    else return null
-  }
-  setVar = x => {
-    //console.log(x)
-    let vars = this.state.Data
-    vars[x.key] = x.val
-    this.setState({
-      Data: vars
-    })
-  }
-  getVar2 = (prop, store = null) => {
-    let obj = store || this.state.Data
-    if (typeof obj === 'undefined') return false
-    var _index = prop.indexOf('.')
-    if (_index > -1) {
-      return this.getVar2(
-        prop.substr(_index + 1),
-        obj[prop.substring(0, _index)]
-      )
-    }
-    return obj[prop]
-  }
 
-  getVar3 = (prop, store = null) => {
+  getVar = (prop, store = null) => {
     let obj = store || this.state.Data
     return Utils.getter(obj, prop)
   }
 
-  DeleteVar3 = prop => {
+  DeleteVar = prop => {
     let currentData = this.state.Data
     let updatedData = Utils.Remover(currentData, prop['index'])
     this.setState({ Date: updatedData })
   }
 
-  UpdateVar = prop => {
-    console.log(prop)
+  setVar = prop => {
     let currentData = this.state.Data
-    let updatedData = Utils.Updater(currentData, prop['index'], prop['Val'])
-    console.log(updatedData)
+    let updatedData = Utils.Setter(currentData, prop['index'], prop['Val'])
     this.setState({ Date: updatedData })
   }
 
@@ -129,9 +103,8 @@ export default class Layout extends React.Component {
     OpenLink: this.OpenLink,
     SubmitForm: this.SubmitForm,
     getVarLength: this.getVarLength,
-    getVar2: this.getVar3,
-    Delete: this.DeleteVar3,
-    Update: this.UpdateVar
+    Delete: this.DeleteVar,
+    Update: this.setVar
   }
   handler = (method, vars) => {
     if (method in this.Methods) return this.Methods[method](vars)

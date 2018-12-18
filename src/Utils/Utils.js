@@ -21,7 +21,7 @@ export default class Utils {
     }
     if (Utils.has(prop, 'Indexs')) {
       str +=
-        prop['Indexs'].map(item => handler.getVar2(scope + '.' + item)) + ' '
+        prop['Indexs'].map(item => handler.getVar(scope + '.' + item)) + ' '
     }
     if (Utils.has(prop, 'Funcs')) {
       str += prop['Funcs'].map(
@@ -42,7 +42,7 @@ export default class Utils {
         (idx = Utils.TrimIndex(scope + '.' + String(item.Index))),
         (params[item.ParameterName] = item.SendByRefence
           ? idx
-          : item.DefaultVal || handler.getVar2(idx))
+          : item.DefaultVal || handler.getVar(idx))
       )
     )
     return params
@@ -50,9 +50,13 @@ export default class Utils {
   static TrimIndex = s => (s[s.length - 1] === '.' ? s.slice(0, -1) : s)
 
   static PropFunCall = (prop, handler, scope) => () =>
-    prop.map(item =>
-      handler[item.FuncName](Utils.FuncParms(item.Paramaters, handler, scope))
-    )
+    prop.map(item => Utils.FuncCaller(item, handler, scope))
+
+  static FuncCaller(func, handler, scope) {
+    handler[func.FuncName](Utils.FuncParms(func.Paramaters, handler, scope))
+    if ('NextFuncs' in func)
+      func.NextFuncs.map(next => Utils.FuncCaller(next, handler, scope))
+  }
 
   static IsVoidComponent = TagType =>
     Utils.voidComponents.indexOf(TagType) !== -1
@@ -82,7 +86,7 @@ export default class Utils {
     return Utils.getVal(a, store)
   }
 
-  static Updater = (store, s, newVal) => {
+  static Setter = (store, s, newVal) => {
     set(store, s, newVal)
     return store
   }

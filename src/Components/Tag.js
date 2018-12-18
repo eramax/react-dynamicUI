@@ -51,6 +51,7 @@ export default function Tag(props) {
     TagProps.key = i
     if (NewScope !== scope) ResultScope = NewScope + '.' + i
     else ResultScope = scope
+    ResultScope = Utils.TrimIndex(ResultScope)
     if (Utils.IsVoidComponent(TagType)) {
       TagResult = React.createElement(TagType, TagProps, TagContents)
     } else {
