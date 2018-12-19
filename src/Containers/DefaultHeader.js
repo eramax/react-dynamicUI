@@ -29,13 +29,13 @@ class DefaultHeader extends Component {
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
         <AppNavbarBrand
           full={{
-            src: '../assets/imgs/logo2.svg',
+            src: '/assets/imgs/logo2.svg',
             width: 89,
             height: 25,
             alt: 'CoreUI Logo'
           }}
           minimized={{
-            src: '../assets/imgs/smallLogo.svg',
+            src: '/assets/imgs/smallLogo.svg',
             width: 30,
             height: 30,
             alt: 'CoreUI Logo'
@@ -76,7 +76,7 @@ class DefaultHeader extends Component {
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
               <img
-                src={'../assets/imgs/avatar.png'}
+                src={'/assets/imgs/avatar.png'}
                 className="img-avatar"
                 alt="admin@bootstrapmaster.com"
               />
