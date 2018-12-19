@@ -1,6 +1,7 @@
 import React, { Component, Suspense } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { Container } from 'reactstrap'
+import { Helmet } from 'react-helmet'
 
 import {
   AppAside,
@@ -14,68 +15,70 @@ import {
   AppSidebarMinimizer,
   AppSidebarNav
 } from '@coreui/react'
-// sidebar nav config
-import navigation from '../../_nav'
-// routes config
-import routes from '../../routes'
 
-class DefaultLayout extends Component {
+import DefaultHeader from './DefaultHeader'
+import DefaultAside from './DefaultAside'
+import DefaultFooter from './DefaultFooter'
+
+import routes from '../TestJsons/routes'
+import navs from '../TestJsons/navs'
+
+export default class DefaultLayout extends Component {
+  state = {
+    dir: 'ltr'
+  }
+
   loading = () => (
     <div className="animated fadeIn pt-1 text-center">Loading...</div>
   )
 
-  signOut(e) {
-    e.preventDefault()
-    this.props.history.push('/login')
+  ChangeDir = () => {
+    let newDir = this.state.dir === 'ltr' ? 'rtl' : 'ltr'
+    this.setState({ dir: newDir })
   }
 
   render() {
     return (
       <div className="app">
+        <Helmet htmlAttributes={{ dir: this.state.dir }} />
         <AppHeader fixed>
-          <Suspense fallback={this.loading()} />
+          <DefaultHeader ChangeDir={this.ChangeDir} />
         </AppHeader>
         <div className="app-body">
           <AppSidebar fixed display="lg">
             <AppSidebarHeader />
             <AppSidebarForm />
-            <Suspense>
-              <AppSidebarNav navConfig={navigation} {...this.props} />
-            </Suspense>
+            <AppSidebarNav navConfig={navs} {...this.props} />
             <AppSidebarFooter />
             <AppSidebarMinimizer />
           </AppSidebar>
           <main className="main">
             <AppBreadcrumb appRoutes={routes} />
             <Container fluid>
-              <Suspense fallback={this.loading()}>
-                <Switch>
-                  {routes.map((route, idx) => {
-                    return route.component ? (
-                      <Route
-                        key={idx}
-                        path={route.path}
-                        exact={route.exact}
-                        name={route.name}
-                        render={props => <route.component {...props} />}
-                      />
-                    ) : null
-                  })}
-                  <Redirect from="/" to="/dashboard" />
-                </Switch>
-              </Suspense>
-            </Container>
+              <Switch>
+                {routes.map((route, idx) => {
+                  return route.component ? (
+                    <Route
+                      key={idx}
+                      path={route.path}
+                      exact={route.exact}
+                      name={route.name}
+                      render={props => <route.component {...props} />}
+                    />
+                  ) : null
+                })}
+                <Redirect from="/" to="/dashboard" />
+              </Switch>
+            </Container>{' '}
           </main>
           <AppAside fixed>
-            <Suspense fallback={this.loading()} />
+            <DefaultAside />
           </AppAside>
         </div>
         <AppFooter>
-          <Suspense fallback={this.loading()} />
+          <DefaultFooter />
         </AppFooter>
       </div>
     )
   }
 }
-
-export default DefaultLayout

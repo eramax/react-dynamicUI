@@ -16,15 +16,15 @@ import {
   AppNavbarBrand,
   AppSidebarToggler
 } from '@coreui/react'
-import logo from '../assets/imgs/logo2.svg'
-import sygnet from '../assets/imgs/smallLogo.svg'
+import logo from '../../public/assets/imgs/logo2.svg'
+import sygnet from '../../public/assets/imgs/smallLogo.svg'
 
 const defaultProps = {}
 
 class DefaultHeader extends Component {
   render() {
     // eslint-disable-next-line
-    const { children, ...attributes } = this.props
+    const { ChangeDir, children, ...attributes } = this.props
 
     return (
       <React.Fragment>
@@ -61,9 +61,9 @@ class DefaultHeader extends Component {
             </NavLink>
           </NavItem>
           <NavItem className="d-md-down-none">
-            <NavLink href="#">
+            <a onClick={ChangeDir}>
               <i className="fas fa-map-marker-alt" />
-            </NavLink>
+            </a>
           </NavItem>
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
@@ -114,8 +114,11 @@ class DefaultHeader extends Component {
               <DropdownItem>
                 <i className="fas fa-lock" /> Lock Account
               </DropdownItem>
-              <DropdownItem onClick={e => this.props.onLogout(e)}>
-                <i className="fas fa-sign-out-alt" /> Logout
+
+              <DropdownItem>
+                <NavLink href="/login">
+                  <i className="fas fa-sign-out-alt" /> Logout
+                </NavLink>
               </DropdownItem>
             </DropdownMenu>
           </AppHeaderDropdown>

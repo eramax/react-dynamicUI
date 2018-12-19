@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import Loadable from 'react-loadable'
-import DefaultLayout from './Containers/Def2'
+import DefaultLayout from './Containers/DefaultLayout'
+import Login from './Containers/Login'
 
 const loading = () => (
   <div className="animated fadeIn pt-3 text-center">Loading...</div>
@@ -18,6 +19,7 @@ class App extends Component {
     return (
       <HashRouter>
         <Switch>
+          <Route exact path="/login" name="Login Page" component={Login} />
           <Route path="/" name="Home" component={DefaultLayout} />
         </Switch>
       </HashRouter>
