@@ -16,8 +16,6 @@ import {
   AppNavbarBrand,
   AppSidebarToggler
 } from '@coreui/react'
-import logo from '../../public/assets/imgs/logo2.svg'
-import sygnet from '../../public/assets/imgs/smallLogo.svg'
 
 const defaultProps = {}
 
