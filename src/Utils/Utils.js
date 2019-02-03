@@ -2,7 +2,7 @@
 import set from 'set-value'
 
 export default class Utils {
-  static has(obj, varName) {
+  static has = (obj, varName) => {
     // if (Utils.IsArray(obj)) return obj.indexOf(varName) || null
     if (typeof obj === 'undefined' || obj === null || !(varName in obj))
       return null
